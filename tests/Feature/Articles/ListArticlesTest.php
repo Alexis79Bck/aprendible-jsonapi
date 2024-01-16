@@ -28,11 +28,41 @@ class ListArticlesTest extends TestCase
                 'attributes' => [
                     'title' => $article->title,
                     'slug' => $article->slug,
-                    'content '=> $article->content,
+                    'content ' => $article->content,
                 ],
                 'links' => [
                     'self' => route('api.v1.articles.show', $article),
                 ]
+            ]
+        ]);
+    }
+
+    /** @test */
+    public function can_fetch_a_list_of_all_articles(): void
+    {
+        $articles = Article::factory()->count(5)->create();
+
+        $response = $this->getJson(route('api.v1.articles.index'));
+
+        foreach ($articles as $article) {
+            $data[] =
+                [
+                    'type' => 'articles',
+                    'id' => (string) $article->getRouteKey(),
+                    'attributes' => [
+                        'title' => $article->title,
+                        'slug' => $article->slug,
+                        'content ' => $article->content,
+                    ],
+                    'links' => [
+                        'self' => route('api.v1.articles.show', $article),
+                    ]
+                ];
+        } 
+        $response->assertExactJson([
+            'data' => $data,
+            'links' => [
+                'self' => route('api.v1.articles.index'),
             ]
         ]);
     }
