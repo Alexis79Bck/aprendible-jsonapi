@@ -29,9 +29,14 @@ class ArticleController extends Controller
    * @param Article $article El Modelo Articulo a consultar, mediante el Model Binding.
    * @return ArticleResource Retorna la información del articulo consultado mediante la clase ArticleResource.
    */
-  public function create(Request $request)
+  public function create(Request $request): ArticleResource
   {
 
+    $request->validate([
+      'data.attributes.title' => ['required'],
+      'data.attributes.slug' => ['required'],
+      'data.attributes.content' => ['required'],
+    ]);
     $article = Article::create([
       'title' => $request->input('data.attributes.title'),
       'slug' => $request->input('data.attributes.slug'),
